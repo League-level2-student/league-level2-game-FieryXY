@@ -2,6 +2,7 @@ package com.fieryxy;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.Random;
 
 public class Obstacle {
@@ -11,6 +12,8 @@ public class Obstacle {
 	int[] heightValues = {30, 40, 30};
 	int width;
 	int height;
+	
+	Rectangle collisionBox = new Rectangle();
 	
 	public enum ObstacleType {
 		SOLDIER, TANK, TRUCK;
@@ -94,6 +97,10 @@ public class Obstacle {
 		else if(direction == Direction.RIGHT) {
 			
 		}
+	}
+	
+	void update() {
+		collisionBox.setBounds(x, y, width, height);
 	}
 	
 

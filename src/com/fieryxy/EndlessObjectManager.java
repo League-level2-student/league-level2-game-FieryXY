@@ -23,7 +23,7 @@ public class EndlessObjectManager implements ActionListener {
 		this.player = player;
 	}
 	
-	
+
 	void draw(Graphics g) {
 		
 		for(Street s : streetArr) {
@@ -32,7 +32,6 @@ public class EndlessObjectManager implements ActionListener {
 		player.draw(g);
 	}
 	void update() {
-		System.out.println(isScrolling);
 		for(Street s : streetArr) {
 			s.update();
 		}
@@ -42,6 +41,8 @@ public class EndlessObjectManager implements ActionListener {
 				streetArr.remove(streetArr.get(j));
 			}
 		}
+		
+		player.update();
 	}
 
 

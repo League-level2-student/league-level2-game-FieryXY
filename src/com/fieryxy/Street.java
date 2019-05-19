@@ -20,7 +20,8 @@ public class Street extends RegularGameObject {
 	
 	int laneCount;
 	EndlessObjectManager manager;
-	
+	ArrayList<LaneTraffic> laneArr = new ArrayList<LaneTraffic>();
+	Random streetRand = new Random();
 
 	//boolean isLarge;
 	public enum StreetType {
@@ -35,14 +36,33 @@ public class Street extends RegularGameObject {
 		this.manager = manager;
 		this.streetType = streetType;
 		streetY = y;
+		createLanes();
+	}
+	
+	void createLanes() {
+		int someY = 10;
+		for(int k = 0; k < laneCount; k++) {
+			laneArr.add(new LaneTraffic((streetRand.nextInt(1)+2)*-1, someY));
+			laneArr.get(laneArr.size()-1).start();
+			someY += 50;
+		}
+		if(streetType == StreetType.TWO_WAY) {
+			for(int k = 0; k < laneCount; k++) {
+				laneArr.add(new LaneTraffic((streetRand.nextInt(1)+2), someY));
+				laneArr.get(laneArr.size()-1).start();
+				someY += 50;
+			}
+		}
 	}
 	
 	void update() {
 		if(manager.isScrolling == true) {
 			super.y += roadVelocity;
+			streetY += roadVelocity;
 		}
-		
-		
+		for(LaneTraffic l : laneArr) {
+			l.update();
+		}
 		
 	}
 	
@@ -54,6 +74,10 @@ public class Street extends RegularGameObject {
 		}
 		else if(streetType == StreetType.TWO_WAY) {
 			g.fillRect(super.x-1, super.y, ColorDash.WIDTH+1, 100*laneCount);
+		}
+		
+		for(LaneTraffic l : laneArr) {
+			l.drawLane(g);
 		}
 		
 	}
@@ -82,6 +106,7 @@ public class Street extends RegularGameObject {
 	private class LaneTraffic {
 		int speed;
 		int lanePositionY;
+		int obstacleDistance = 250;
 		ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 		
 		
@@ -94,12 +119,12 @@ public class Street extends RegularGameObject {
 			int nextX = 0;
 			while(nextX <= ColorDash.WIDTH) {
 				if(speed > 0) {
-					obstacles.add(new Obstacle(nextX, Street.this.streetY, chooseObstacleType(), Direction.RIGHT, chooseRandomColor()));
+					obstacles.add(new Obstacle(nextX, Street.this.streetY + lanePositionY, chooseObstacleType(), Direction.RIGHT, chooseRandomColor()));
 				}
 				else if(speed < 0) {
-					obstacles.add(new Obstacle(nextX, Street.this.streetY, chooseObstacleType(), Direction.LEFT, chooseRandomColor()));
+					obstacles.add(new Obstacle(nextX, Street.this.streetY + lanePositionY, chooseObstacleType(), Direction.LEFT, chooseRandomColor()));
 				}
-				nextX += (obstacles.get(obstacles.size()-1).width) + 30;
+				nextX += (obstacles.get(obstacles.size()-1).width) + obstacleDistance;
 			}
 		}
 		ObstacleType chooseObstacleType() {
@@ -111,12 +136,29 @@ public class Street extends RegularGameObject {
 		
 		void update() {
 			for(Obstacle o : obstacles) {
-				o.y = Street.this.streetY;
+				o.y = Street.this.streetY+lanePositionY;
+				o.x += speed;
 			}
+			if(speed < 0) {
+				if(obstacles.get(obstacles.size()-1).x <= ColorDash.WIDTH-obstacles.get(obstacles.size()-1).width-obstacleDistance) {
+					
+					obstacles.add(new Obstacle(ColorDash.WIDTH, Street.this.streetY+lanePositionY, chooseObstacleType(), Direction.LEFT, chooseRandomColor()));
+				
+				}
+			}
+			else if(speed > 0) {
+				if(obstacles.get(obstacles.size()-1).x >= obstacleDistance) {
+					obstacles.add(new Obstacle(0, Street.this.streetY+lanePositionY, chooseObstacleType(), Direction.RIGHT, chooseRandomColor()));
+					
+				}
+			}
+			
+			
 		}
 		void drawLane(Graphics g) {
 			for(Obstacle o : obstacles) {
 				o.draw(g);
+				o.update();
 			}
 		}
 	}
