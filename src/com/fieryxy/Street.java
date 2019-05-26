@@ -14,7 +14,7 @@ import com.fieryxy.Obstacle.ObstacleType;
 
 public class Street extends RegularGameObject {
 	
-	int roadVelocity = 1;
+	int roadVelocity = 3;
 	int streetY;
 	
 	
@@ -42,7 +42,7 @@ public class Street extends RegularGameObject {
 	void createLanes() {
 		int someY = 10;
 		for(int k = 0; k < laneCount; k++) {
-			laneArr.add(new LaneTraffic((streetRand.nextInt(1)+2)*-1, someY));
+			laneArr.add(new LaneTraffic((streetRand.nextInt(1)+1)*-1, someY));
 			laneArr.get(laneArr.size()-1).start();
 			someY += 50;
 		}
@@ -103,10 +103,12 @@ public class Street extends RegularGameObject {
 			return Color.GRAY;
 		}
 	}
-	private class LaneTraffic {
+	public class LaneTraffic {
 		int speed;
 		int lanePositionY;
-		int obstacleDistance = 250;
+		
+		int obstacleDistance;
+		
 		ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
 		
 		
@@ -114,18 +116,31 @@ public class Street extends RegularGameObject {
 		LaneTraffic(int speed, int lanePositionY) {
 			this.speed = speed;
 			this.lanePositionY = lanePositionY;
+			this.obstacleDistance = obstacleDistance;
+			if(Street.this.streetType == StreetType.TWO_WAY) {
+				obstacleDistance = 300;
+			}
+			else {
+				obstacleDistance = 200;
+			}
 		}
 		void start() {
 			int nextX = 0;
 			while(nextX <= ColorDash.WIDTH) {
 				if(speed > 0) {
 					obstacles.add(new Obstacle(nextX, Street.this.streetY + lanePositionY, chooseObstacleType(), Direction.RIGHT, chooseRandomColor()));
-				}
-				else if(speed < 0) {
-					obstacles.add(new Obstacle(nextX, Street.this.streetY + lanePositionY, chooseObstacleType(), Direction.LEFT, chooseRandomColor()));
-				}
-				nextX += (obstacles.get(obstacles.size()-1).width) + obstacleDistance;
+					obstacleDebug(obstacles.get(obstacles.size()-1), "start");
+					
 			}
+			else if(speed < 0) {	
+					obstacles.add(new Obstacle(nextX, Street.this.streetY + lanePositionY, chooseObstacleType(), Direction.LEFT, chooseRandomColor()));
+					obstacleDebug(obstacles.get(obstacles.size()-1), "start");
+					
+			}
+			nextX += obstacleDistance+obstacles.get(obstacles.size()-1).width;
+			}
+				
+			
 		}
 		ObstacleType chooseObstacleType() {
 			Random typeChoose = new Random();
@@ -139,16 +154,26 @@ public class Street extends RegularGameObject {
 				o.y = Street.this.streetY+lanePositionY;
 				o.x += speed;
 			}
+			for(int kl = 0; kl < obstacles.size(); kl++) {
+				if(obstacles.get(kl).x > ColorDash.WIDTH || obstacles.get(kl).x < 0) {
+					Obstacle temp = obstacles.get(kl);
+					temp = null;
+					obstacles.remove(obstacles.get(kl));
+				}
+			}
 			if(speed < 0) {
-				if(obstacles.get(obstacles.size()-1).x <= ColorDash.WIDTH-obstacles.get(obstacles.size()-1).width-obstacleDistance) {
+				if(obstacles.get(obstacles.size()-1).x-obstacles.get(obstacles.size()-1).width <= ColorDash.WIDTH-obstacleDistance) {
 					
 					obstacles.add(new Obstacle(ColorDash.WIDTH, Street.this.streetY+lanePositionY, chooseObstacleType(), Direction.LEFT, chooseRandomColor()));
+					obstacleDebug(obstacles.get(obstacles.size()-1), "update-less");
 				
 				}
 			}
 			else if(speed > 0) {
+				//System.out.println(obstacles.get(obstacles.size()-1).obstacleColor.toString());
 				if(obstacles.get(obstacles.size()-1).x >= obstacleDistance) {
 					obstacles.add(new Obstacle(0, Street.this.streetY+lanePositionY, chooseObstacleType(), Direction.RIGHT, chooseRandomColor()));
+					obstacleDebug(obstacles.get(obstacles.size()-1), "update-greater");
 					
 				}
 			}
@@ -158,7 +183,25 @@ public class Street extends RegularGameObject {
 		void drawLane(Graphics g) {
 			for(Obstacle o : obstacles) {
 				o.draw(g);
-				o.update();
+			}
+		}
+		
+		void obstacleDebug(Obstacle toDebug, String function) {
+			toDebug.collisionBox.setBounds(toDebug.x, toDebug.y, toDebug.width, toDebug.height);
+			boolean isCollision = false;
+			for(Obstacle d : obstacles) {
+				if(d.collisionBox.intersects(toDebug.collisionBox)) {
+					if(d != toDebug) {
+						//hSystem.out.println(function);
+						isCollision = true;
+						break;
+					}
+					
+				}
+			}
+			if(isCollision == true) {
+				obstacles.remove(toDebug);
+				toDebug = null;
 			}
 		}
 	}

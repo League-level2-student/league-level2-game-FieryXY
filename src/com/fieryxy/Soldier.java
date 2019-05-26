@@ -12,12 +12,12 @@ import javax.swing.Timer;
 public class Soldier extends ColoredGameObject{
 	
 
-	int speed = 20;
+	int speed = 30;
 	Rectangle collisionBox = new Rectangle();
 	
-	Soldier(int x, int y, Color color) {
-		super(x,y,color);
-		
+	
+	Soldier(int x, int y) {
+		super(x,y);
 	}
 	
 	void draw(Graphics g) {
@@ -26,7 +26,7 @@ public class Soldier extends ColoredGameObject{
 	}
 	
 	void update() {
-		collisionBox.setBounds(speed, speed, 30, 30);
+		collisionBox.setBounds(x, y, 30, 30);
 	}
 	
 	void up() {
@@ -36,10 +36,16 @@ public class Soldier extends ColoredGameObject{
 		this.y += speed;
 	}
 	void right() {
-		this.x += speed;
+		if(this.x+30 < ColorDash.WIDTH-10) {
+			this.x += speed;
+		}
+		
 	}
 	void left() {
-		this.x -= speed;
+		if(this.x > 10) {
+			this.x -= speed;
+		}
+		
 	}
 
 }

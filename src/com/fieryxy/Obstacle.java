@@ -91,6 +91,7 @@ public class Obstacle {
 	void draw(Graphics g) {
 		g.setColor(obstacleColor);
 		g.fillRect(x, y, width, height);
+		collisionBox.setBounds(x, y, width, height);
 		if(direction == Direction.LEFT) {
 			
 		}
@@ -99,9 +100,7 @@ public class Obstacle {
 		}
 	}
 	
-	void update() {
-		collisionBox.setBounds(x, y, width, height);
-	}
+	
 	
 
 }

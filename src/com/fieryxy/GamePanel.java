@@ -1,6 +1,7 @@
 package com.fieryxy;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +33,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	public static final int MAGENTA = 3;
 	
 	public int currentState = MENU;
+	int highScore = 0;
+	
+	Font menuMainFont = new Font("Arial", Font.PLAIN, 20);
 	
 	GamePanel() {
 		frameDraw = new Timer(1000/60, this);
@@ -79,7 +83,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 			if(e.getKeyCode() == KeyEvent.VK_E) {
 				System.out.println("hi");
 				currentState = ENDLESS;
-				 eom = new EndlessObjectManager(new Soldier(ColorDash.WIDTH/2-30, ColorDash.HEIGHT-120, Color.RED));
+				 eom = new EndlessObjectManager(new Soldier(ColorDash.WIDTH/2-30, ColorDash.HEIGHT-120), this);
 				 startEndless();
 			}
 		}
@@ -91,12 +95,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				eom.player.right();
 			}
 			else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-				if(eom.isScrolling == false) {
-					eom.isScrolling = true;
-				}
-				else {
-					eom.isScrolling = false;
-				}
+				eom.isScrolling = !(eom.isScrolling);
 			}
 		}
 		
@@ -120,8 +119,15 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	}
 
 	void startEndless() {
-		 roadSpawn = new Timer(4500, eom);
+		 roadSpawn = new Timer(1000, eom);
 		roadSpawn.start();
+	}
+	void endlessToMenu() {
+		if(eom.score > highScore) {
+			highScore = eom.score;
+		}
+		currentState = MENU;
+		eom = null;
 	}
 	
 }
