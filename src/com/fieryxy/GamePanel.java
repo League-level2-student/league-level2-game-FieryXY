@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	
 	public int currentState = MENU;
 	int highScore = 0;
+	int lastScore = 0;
 	
 	Font menuMainFont = new Font("Arial", Font.PLAIN, 20);
 	
@@ -56,8 +57,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	void drawMenuState(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, ColorDash.WIDTH, ColorDash.HEIGHT);
+		g.setColor(Color.WHITE);
+		g.setFont(menuMainFont);
+		g.drawString("Press E To Play", 300, 100);
 		g.setColor(Color.GRAY);
-		g.fillRect(200, 100, (ColorDash.WIDTH/2)-100, 30);
+		g.drawString("High Score: "+highScore, 300, 300);
+		g.drawString("Last Score: "+lastScore, 300, 400);
 	}
 	void updateMenuState() {
 		
@@ -126,6 +131,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		if(eom.score > highScore) {
 			highScore = eom.score;
 		}
+		lastScore = eom.score;
 		currentState = MENU;
 		eom = null;
 	}

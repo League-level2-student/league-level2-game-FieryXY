@@ -3,7 +3,10 @@ package com.fieryxy;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 public class Obstacle {
 	int x;
@@ -12,6 +15,10 @@ public class Obstacle {
 	int[] heightValues = {30, 40, 30};
 	int width;
 	int height;
+	
+	public BufferedImage image;
+	public boolean needImage = true;
+	public boolean gotImage = false;
 	
 	Rectangle collisionBox = new Rectangle();
 	
@@ -35,23 +42,55 @@ public class Obstacle {
 		getValues();
 	}
 	
+
+	
+	
+	
 	void getValues() {
 		if(type == ObstacleType.SOLDIER) {
 			width = widthValues[0];
 			height = heightValues[0];
 			if(obstacleColor == Color.RED) {
-				
+				if(needImage) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("SoldierRed.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
 			}
 			else if(obstacleColor == Color.GREEN) {
-				//Green Soldier
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("SoldierGreen.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 
 			}
 			else if(obstacleColor == Color.BLUE) {
 				//Blue Soldier
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("SoldierBlue.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 
 			}
 			else if(obstacleColor == Color.MAGENTA) {
 				//Magenta or Purple Soldier
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("SoldierMagenta.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 			}
 		}
 		else if(type == ObstacleType.TANK) {
@@ -59,15 +98,87 @@ public class Obstacle {
 			height = heightValues[1];
 			if(obstacleColor == Color.RED) {
 				//Red Tank
+				if(direction == Direction.RIGHT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankRedRight.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
+				else if(direction == Direction.LEFT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankRedLeft.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
 			}
 			else if(obstacleColor == Color.GREEN) {
 				//Green Tank
+				if(direction == Direction.RIGHT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankGreenRight.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
+				else if(direction == Direction.LEFT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankGreenLeft.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
 			}
 			else if(obstacleColor == Color.BLUE) {
 				//Blue Tank
+				if(direction == Direction.RIGHT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankBlueRight.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
+				else if(direction == Direction.LEFT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankBlueLeft.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
 			}
 			else if(obstacleColor == Color.MAGENTA) {
 				//Magenta or Purple Tank
+				if(direction == Direction.RIGHT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankMagentaRight.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
+				else if(direction == Direction.LEFT) {
+					try {
+						image = ImageIO.read(this.getClass().getResourceAsStream("TankMagentaLeft.png"));
+						gotImage = true;
+					}
+					catch(Exception e) {
+						
+					}
+				}
 			}
 		}
 		else if(type == ObstacleType.TRUCK) {
@@ -75,29 +186,58 @@ public class Obstacle {
 			height = heightValues[2];
 			if(obstacleColor == Color.RED) {
 				//Red Truck
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("TruckRed.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 			}
 			else if(obstacleColor == Color.GREEN) {
 				//Green Truck
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("TruckGreen.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 			}
 			else if(obstacleColor == Color.BLUE) {
 				//Blue Truck
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("TruckBlue.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 			}
 			else if(obstacleColor == Color.MAGENTA) {
 				//Magenta or Purple Truck
+				try {
+					image = ImageIO.read(this.getClass().getResourceAsStream("TruckMagenta.png"));
+					gotImage = true;
+				}
+				catch(Exception e) {
+					
+				}
 			}
 		}
+		needImage = false;
 	}
 	
 	void draw(Graphics g) {
-		g.setColor(obstacleColor);
-		g.fillRect(x, y, width, height);
+		if(gotImage) {
+			g.drawImage(image, x, y, width, height, null);
+		}
+		else {
+			g.setColor(obstacleColor);
+			g.fillRect(x, y, width, height);
+		}
 		collisionBox.setBounds(x, y, width, height);
-		if(direction == Direction.LEFT) {
-			
-		}
-		else if(direction == Direction.RIGHT) {
-			
-		}
+	
 	}
 	
 	

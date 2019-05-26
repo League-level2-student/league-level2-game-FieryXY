@@ -104,7 +104,7 @@ public class EndlessObjectManager implements ActionListener {
 				for(Obstacle o : l.obstacles) {
 					if(player.collisionBox.intersects(o.collisionBox)) {
 						if(o.obstacleColor != player.color) {
-							gp.currentState = gp.MENU;
+							gp.endlessToMenu();
 						}
 						else {
 							score++;
