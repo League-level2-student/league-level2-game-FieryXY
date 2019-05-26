@@ -17,9 +17,9 @@ public class Soldier extends ColoredGameObject{
 	int speed = 30;
 	Rectangle collisionBox = new Rectangle();
 	
-	public static BufferedImage image;
-	public static boolean needImage = true;
-	public static boolean gotImage = false;
+	public BufferedImage image;
+	public boolean needImage = true;
+	public boolean gotImage = false;
 	
 	Soldier(int x, int y) {
 		super(x,y);

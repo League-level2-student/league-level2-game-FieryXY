@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -59,7 +60,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		g.fillRect(0, 0, ColorDash.WIDTH, ColorDash.HEIGHT);
 		g.setColor(Color.WHITE);
 		g.setFont(menuMainFont);
-		g.drawString("Press E To Play", 300, 100);
+		g.drawString("Press E To Play and G for Instructions", 300, 100);
 		g.setColor(Color.GRAY);
 		g.drawString("High Score: "+highScore, 300, 300);
 		g.drawString("Last Score: "+lastScore, 300, 400);
@@ -90,6 +91,10 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				currentState = ENDLESS;
 				 eom = new EndlessObjectManager(new Soldier(ColorDash.WIDTH/2-30, ColorDash.HEIGHT-120), this);
 				 startEndless();
+			}
+			else if(e.getKeyCode() == KeyEvent.VK_G) {
+				JOptionPane.showMessageDialog(null, "Use the arrow keys to move. You can click space to stop your character. Touch vehicles of "
+						+ "similar color to get points and avoid other colors.");
 			}
 		}
 		else if(currentState == ENDLESS) {
